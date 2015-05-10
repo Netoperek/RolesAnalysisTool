@@ -8,9 +8,11 @@
                     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
     <mvc:annotation-driven />
-    <mvc:resources mapping="/styles/**" location="WEB-INF/styles/" />
-    <mvc:resources mapping="/scripts/**" location="WEB-INF/scripts/" />
-    <mvc:resources mapping="/graphs/**" location="WEB-INF/graphs/" />
+    <mvc:resources mapping="styles/**" location="WEB-INF/styles/" />
+    <mvc:resources mapping="scripts/**" location="WEB-INF/scripts/" />
+    <mvc:resources mapping="graphs/styles/**" location="WEB-INF/styles/" />
+    <mvc:resources mapping="graphs/scripts/**" location="WEB-INF/scripts/" />
+    <mvc:resources mapping="graphs/graphs/**" location="WEB-INF/graphs/" />
 
 
     <context:component-scan base-package="pl.edu.agh.toik"/>
