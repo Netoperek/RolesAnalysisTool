@@ -6,3 +6,4 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <link rel="stylesheet" type="text/css" href="styles/graphs.css">
 <link rel="stylesheet" type="text/css" href="styles/main.css">
+<link rel="stylesheet" type="text/css" href="styles/modal.css">

@@ -6,8 +6,9 @@
             <a class="navbar-brand" href="/graphs">Role Analisys Tool</a>
         </div>
 
-        <form class="navbar-form navbar-left" method="POST" action="/graphs/draw" enctype="multipart/form-data">
-            <button type="submit" class="btn btn-default">Draw</button>
-        </form>
+        <ul class="nav navbar-nav">
+            <li><a href="#openModal">Upload</a></li>
+        </ul>
+    <#include "uploadModal.ftl">
     </div>
 </nav>

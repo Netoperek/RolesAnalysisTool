@@ -13,7 +13,7 @@
     <mvc:resources mapping="graphs/styles/**" location="WEB-INF/styles/" />
     <mvc:resources mapping="graphs/scripts/**" location="WEB-INF/scripts/" />
     <mvc:resources mapping="graphs/graphs/**" location="WEB-INF/graphs/" />
-
+    <mvc:resources mapping="graphs/**" location="WEB-INF/graphs/" />
 
     <context:component-scan base-package="pl.edu.agh.toik"/>
 

@@ -22,3 +22,14 @@
     margin-top: 10%;
     width: 50%;
 }
+
+.row-text {
+    padding-top: 10px;
+}
+
+.graph {
+    width: 960;
+    height: 500;
+    border-style: solid;
+    border-width: medium;
+}

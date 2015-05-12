@@ -69,7 +69,7 @@ public class GraphController implements ServletContextAware {
                 // Create the file on server
                 File serverFile = new File(dir.getPath() + File.separator + name);
                 BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
+                        new FileOutputStream(serverFile, false));
                 stream.write(bytes);
                 stream.close();
 
@@ -83,13 +83,4 @@ public class GraphController implements ServletContextAware {
         updateGrpahsFilesSet();
         return "graphs";
     }
-
-    @RequestMapping(value="/draw", method=RequestMethod.POST)
-    public String draw(ModelMap model) {
-        model.addAttribute("draw", true);
-        model.addAttribute("uploaded", false);
-        model.addAttribute("graphsFiles", graphsFiles);
-        return "graphs";
-    }
-
 }

@@ -15,10 +15,13 @@
                 <#list graphsFiles as ele>
                 <tr>
                     <td>
-                    ${ele_index + 1}
+                        ${ele_index + 1}
                     </td>
-                    <td>
-                    ${ele}
+                    <td class="graph-row">
+                        <button onclick="drawGraph('${ele}')" type="submit" class="btn btn-info">
+                            <span class="glyphicon glyphicon-menu-left"></span>
+                        </button>
+                        ${ele}
                     </td>
                 </tr>
                 </#list>
