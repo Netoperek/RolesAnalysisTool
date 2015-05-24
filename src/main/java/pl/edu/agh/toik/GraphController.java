@@ -28,7 +28,10 @@ public class GraphController implements ServletContextAware {
 
     private void updateGrpahsFilesSet() {
         File[] files = new File(getGraphsDirectory()).listFiles();
+        System.out.println("HERE " + getGraphsDirectory());
+        System.out.println("HERE " + files);
         graphsFiles.clear();
+        if (files == null) return;
         for (File file : files) {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
@@ -37,7 +40,7 @@ public class GraphController implements ServletContextAware {
     }
 
     private String getGraphsDirectory() {
-        return servletContext.getRealPath("/") + File.separator + GRAPHS_DIR;
+        return servletContext.getRealPath("/") + GRAPHS_DIR;
     }
 
     @Override
