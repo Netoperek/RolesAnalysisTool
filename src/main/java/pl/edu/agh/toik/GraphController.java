@@ -4,6 +4,7 @@ package pl.edu.agh.toik;
  * Created by pkala on 5/9/15.
  */
 
+import edu.uci.ics.jung.graph.Graph;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,9 @@ public class GraphController implements ServletContextAware {
         for (File file : files) {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
-                System.out.println(GraphUtils.graphFromJson(file.getAbsolutePath()));
+                Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
+                GraphUtils.verticesBetweenness(graph);
+                GraphUtils.verticesPageRank(graph);
             }
         }
     }
