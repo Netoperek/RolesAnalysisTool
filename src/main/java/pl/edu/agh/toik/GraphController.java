@@ -28,13 +28,12 @@ public class GraphController implements ServletContextAware {
 
     private void updateGrpahsFilesSet() {
         File[] files = new File(getGraphsDirectory()).listFiles();
-        System.out.println("HERE " + getGraphsDirectory());
-        System.out.println("HERE " + files);
         graphsFiles.clear();
         if (files == null) return;
         for (File file : files) {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
+                System.out.println(GraphUtils.graphFromJson(file.getAbsolutePath()));
             }
         }
     }
