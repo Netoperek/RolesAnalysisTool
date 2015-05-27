@@ -18,7 +18,7 @@ import java.util.*;
  * Created by pkala on 5/26/15.
  */
 public class GraphUtils {
-    private static final int ALPHA = 10;
+    private static final int ALPHA = 100;
 
     static class ValueComparator implements Comparator<String> {
 

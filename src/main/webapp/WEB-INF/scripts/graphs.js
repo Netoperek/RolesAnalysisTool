@@ -1,7 +1,9 @@
 /**
  * Created by pkala on 5/10/15.
  */
+
 function drawGraph(graph, rolesKeys, rolesValues) {
+    var simpleRoles = true;
     var rolesKeysArray = rolesKeys.split(", ");
     var rolesValuesArray = rolesValues.split(", ");
     var rolesMap = {};
@@ -52,16 +54,25 @@ function drawGraph(graph, rolesKeys, rolesValues) {
      .text(function(d) { return d.name; });
 
      var i = 0;
-     for(var i = 0; i < graph.nodes.length; i++) {
-         var key = graph.nodes[i].name;
-         var value = rolesMap[key];
-         if(value == 'MEDIATOR') {
-             graph.nodes[i].group = 0;
-         } else if (value == 'STANDARD') {
-             graph.nodes[i].group = 1;
-         } else {
-             graph.nodes[i].group = 2;
+     if(simpleRoles) {
+         for(var i = 0; i < graph.nodes.length; i++) {
+             var key = graph.nodes[i].name;
+             var value = rolesMap[key];
+             if(value == 'MEDIATOR') {
+                 graph.nodes[i].group = 0;
+             } else if (value == 'STANDARD') {
+                 graph.nodes[i].group = 1;
+             } else {
+                 graph.nodes[i].group = 2;
+             }
          }
+
+         document.getElementById("MEDIATOR").style.color = color(0);
+         document.getElementById("MEDIATOR").style.visibility = 'visible';
+         document.getElementById("STANDARD").style.color = color(1);
+         document.getElementById("STANDARD").style.visibility = 'visible';
+         document.getElementById("INFLUENTIAL").style.color = color(2);
+         document.getElementById("INFLUENTIAL").style.visibility = 'visible';
      }
 
      node.style("fill", function(d) { return color(d.group); })

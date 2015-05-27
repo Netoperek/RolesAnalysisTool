@@ -38,8 +38,6 @@ public class GraphController implements ServletContextAware {
                 graphsFiles.add(file.getName());
                 Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
                 HashMap<String, Role> roles = GraphUtils.markRoles(graph);
-                System.out.println(roles);
-                System.out.println("HERE" + file.getName());
                 graphsRoles.put(file.getName(), roles);
             }
         }
@@ -67,6 +65,7 @@ public class GraphController implements ServletContextAware {
     public String handleFileUpload(ModelMap model, @RequestParam("file") MultipartFile file) {
         String name = file.getOriginalFilename();
         model.addAttribute("graphsFiles", graphsFiles);
+        model.addAttribute("graphsRoles", graphsRoles);
         model.addAttribute("uploaded", false);
         if (!file.isEmpty()) {
             model.addAttribute("uploaded", true);

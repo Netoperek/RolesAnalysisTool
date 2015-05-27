@@ -18,6 +18,7 @@
                         ${ele_index + 1}
                     </td>
                     <td class="graph-row">
+                    <#if graphsRoles??>
                         <#assign values = graphsRoles[ele]?values>
                         <#assign keys = graphsRoles[ele]?keys>
                         ${ele}
@@ -25,6 +26,7 @@
                             <span class="glyphicon glyphicon-menu-left"></span>
                         </button>
                     </td>
+                    </#if>
                 </tr>
                 </#list>
             </tbody>
@@ -34,5 +36,8 @@
 
         </#list>
     </div>
+    <p id="STANDARD" style="visibility:hidden">STANDARD</p>
+    <p id="MEDIATOR" style="visibility:hidden">MEDIATOR</p>
+    <p id="INFLUENTIAL" style="visibility:hidden">INFLUENTIAL</p>
 </div>
 </#if>
