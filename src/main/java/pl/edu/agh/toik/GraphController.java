@@ -28,6 +28,8 @@ public class GraphController implements ServletContextAware {
     private final String GRAPHS_DIR = "WEB-INF/graphs/";
     private HashSet<String> graphsFiles = new HashSet<String>();
     private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
+    private static int mediatorsPer = 50;
+    private static int influentialPer = 50;
 
     private void updateGrpahsFilesSet() {
         File[] files = new File(getGraphsDirectory()).listFiles();
@@ -37,7 +39,7 @@ public class GraphController implements ServletContextAware {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
                 Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
-                HashMap<String, Role> roles = GraphUtils.markRoles(graph);
+                HashMap<String, Role> roles = GraphUtils.markRoles(graph, mediatorsPer, influentialPer);
                 graphsRoles.put(file.getName(), roles);
             }
         }
@@ -86,10 +88,19 @@ public class GraphController implements ServletContextAware {
             } catch (Exception e) {
 
             }
-        } else {
-
         }
         updateGrpahsFilesSet();
+        return "graphs";
+    }
+
+    @RequestMapping(value="/updateRoles", method=RequestMethod.POST)
+    public String handleRolesInput(ModelMap model, @RequestParam("mediator") Integer mediatorP,@RequestParam("influential") Integer influentialP) {
+        this.influentialPer = influentialP;
+        this.mediatorsPer = mediatorP;
+        updateGrpahsFilesSet();
+        model.addAttribute("graphsFiles", graphsFiles);
+        model.addAttribute("graphsRoles", graphsRoles);
+        model.addAttribute("uploaded", false);
         return "graphs";
     }
 }

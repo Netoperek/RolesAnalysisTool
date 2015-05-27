@@ -44,7 +44,6 @@ public class GraphUtils {
 
     public static Graph<String, MyLink> graphFromJson(String filepath) {
         Graph<String, MyLink> graph = new UndirectedSparseMultigraph<String, MyLink>();
-        List<String> verticesList = new ArrayList<String>();
 
         JSONParser parser = new JSONParser();
         try {
@@ -103,10 +102,13 @@ public class GraphUtils {
         return sortedResult;
     }
 
-    public static HashMap<String, Role> markRoles(Graph<String, MyLink> graph) {
+    public static HashMap<String, Role> markRoles(
+            Graph<String, MyLink> graph, double pageRankPercentage, double beetweennesPercentage) {
+
         TreeMap<String, Double> betweenness = GraphUtils.verticesBetweenness(graph);
         TreeMap<String, Double> pageRanks = GraphUtils.verticesPageRank(graph);
-        int limit = graph.getVertexCount() / 5;
+        int limitBeetweenness = (int) Math.round(graph.getVertexCount() * beetweennesPercentage / 100);
+        int limitPageRank = (int) Math.round(graph.getVertexCount() * pageRankPercentage / 100);
         HashMap<String, Role> result = new HashMap<String, Role>();
         HashMap<String, Role> mediators = new HashMap<String, Role>();
         HashMap<String, Role> standards = new HashMap<String, Role>();
@@ -114,7 +116,7 @@ public class GraphUtils {
 
         int counter = 0;
         for(Map.Entry<String,Double> entry : betweenness.entrySet()) {
-            if(counter >= limit) break;
+            if(counter >= limitBeetweenness) break;
             counter++;
             String key = entry.getKey();
             mediators.put(key, Role.MEDIATOR);
@@ -122,7 +124,7 @@ public class GraphUtils {
 
         counter = 0;
         for(Map.Entry<String,Double> entry : pageRanks.entrySet()) {
-            if(counter >= limit) break;
+            if(counter >= limitPageRank) break;
             counter++;
             String key = entry.getKey();
             if(!betweenness.containsKey(key)) {

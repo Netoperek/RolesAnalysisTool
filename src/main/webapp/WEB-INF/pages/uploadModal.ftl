@@ -1,4 +1,4 @@
-<div id="openModal" class="modalDialog">
+<div id="openUploadModal" class="modalDialog">
     <div>
         <a href="#close" title="Close" class="close">X</a>
         <div class="panel-body">
