@@ -12,15 +12,29 @@ import org.json.simple.parser.ParseException;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by pkala on 5/26/15.
  */
 public class GraphUtils {
     private static final int ALPHA = 10;
+
+    static class ValueComparator implements Comparator<String> {
+
+        Map<String, Double> base;
+        public ValueComparator(Map<String, Double> base) {
+            this.base = base;
+        }
+
+        public int compare(String a, String b) {
+            if (base.get(a) >= base.get(b)) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    }
 
     private static Transformer<MyLink, Double> wtTransformer = new Transformer<MyLink,Double>() {
         public Double transform(MyLink link) {
@@ -62,23 +76,70 @@ public class GraphUtils {
         return graph;
     }
 
-    public static HashMap<String, Double> verticesBetweenness(Graph<String, MyLink> graph) {
+    public static TreeMap<String, Double> verticesBetweenness(Graph<String, MyLink> graph) {
         BetweennessCentrality<String, MyLink> bcb = new BetweennessCentrality<String, MyLink>(graph, wtTransformer);
         HashMap<String, Double> result= new HashMap<String, Double>();
+
         for(int i = 0; i < graph.getVertices().size(); i++) {
             String vertex = graph.getVertices().toArray()[i].toString();
             result.put(vertex, bcb.getVertexScore(vertex));
         }
-        return result;
+        ValueComparator bvc =  new ValueComparator(result);
+        TreeMap<String,Double> sortedResult = new TreeMap<String,Double>(bvc);
+        sortedResult.putAll(result);
+        return sortedResult;
     }
 
-    public static HashMap<String, Double> verticesPageRank(Graph<String, MyLink> graph) {
+    public static TreeMap<String, Double> verticesPageRank(Graph<String, MyLink> graph) {
         PageRank<String, MyLink> pageRank = new PageRank(graph, wtTransformer, ALPHA);
         HashMap<String, Double> result= new HashMap<String, Double>();
         for(int i = 0; i < graph.getVertices().size(); i++) {
             String vertex = graph.getVertices().toArray()[i].toString();
             result.put(vertex, pageRank.getVertexScore(vertex));
         }
+        ValueComparator bvc =  new ValueComparator(result);
+        TreeMap<String,Double> sortedResult = new TreeMap<String,Double>(bvc);
+        sortedResult.putAll(result);
+        return sortedResult;
+    }
+
+    public static HashMap<String, Role> markRoles(Graph<String, MyLink> graph) {
+        TreeMap<String, Double> betweenness = GraphUtils.verticesBetweenness(graph);
+        TreeMap<String, Double> pageRanks = GraphUtils.verticesPageRank(graph);
+        int limit = graph.getVertexCount() / 5;
+        HashMap<String, Role> result = new HashMap<String, Role>();
+        HashMap<String, Role> mediators = new HashMap<String, Role>();
+        HashMap<String, Role> standards = new HashMap<String, Role>();
+        HashMap<String, Role> influentials = new HashMap<String, Role>();
+
+        int counter = 0;
+        for(Map.Entry<String,Double> entry : betweenness.entrySet()) {
+            if(counter >= limit) break;
+            counter++;
+            String key = entry.getKey();
+            mediators.put(key, Role.MEDIATOR);
+        }
+
+        counter = 0;
+        for(Map.Entry<String,Double> entry : pageRanks.entrySet()) {
+            if(counter >= limit) break;
+            counter++;
+            String key = entry.getKey();
+            if(!betweenness.containsKey(key)) {
+                influentials.put(key, Role.INFLUENTIAL);
+            }
+        }
+
+        for(Map.Entry<String,Double> entry : pageRanks.entrySet()) {
+            String key = entry.getKey();
+            if(!betweenness.containsKey(key) && !pageRanks.containsKey(key) ) {
+                standards.put(key, Role.STANDARD);
+            }
+        }
+
+        result.putAll(standards);
+        result.putAll(influentials);
+        result.putAll(mediators);
         return result;
     }
 }

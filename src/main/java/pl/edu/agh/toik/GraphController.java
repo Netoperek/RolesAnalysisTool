@@ -35,8 +35,7 @@ public class GraphController implements ServletContextAware {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
                 Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
-                GraphUtils.verticesBetweenness(graph);
-                GraphUtils.verticesPageRank(graph);
+                GraphUtils.markRoles(graph);
             }
         }
     }

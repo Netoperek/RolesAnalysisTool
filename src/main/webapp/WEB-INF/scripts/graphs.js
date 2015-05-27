@@ -37,7 +37,7 @@ function drawGraph(graph) {
      .enter().append("circle")
      .attr("class", "node")
      .attr("r", 5)
-     .style("fill", function(d) { return color(d.group); })
+     //.style("fill", function(d) { return color(d.group); })
      .call(force.drag);
 
      node.append("title")
