@@ -1,7 +1,16 @@
 /**
  * Created by pkala on 5/10/15.
  */
-function drawGraph(graph) {
+function drawGraph(graph, rolesKeys, rolesValues) {
+    var rolesKeysArray = rolesKeys.split(", ");
+    var rolesValuesArray = rolesValues.split(", ");
+    var rolesMap = {};
+    var i = 0;
+    for(i = 0; i < rolesKeysArray.length; i++) {
+        rolesMap[rolesKeysArray[i]] = rolesValuesArray[i];
+    }
+    console.log(rolesKeysArray);
+    console.log(rolesValuesArray);
     console.log("Drawing graph " + graph);
     var width = 960,
         height = 500;
@@ -37,11 +46,25 @@ function drawGraph(graph) {
      .enter().append("circle")
      .attr("class", "node")
      .attr("r", 5)
-     //.style("fill", function(d) { return color(d.group); })
      .call(force.drag);
 
      node.append("title")
      .text(function(d) { return d.name; });
+
+     var i = 0;
+     for(var i = 0; i < graph.nodes.length; i++) {
+         var key = graph.nodes[i].name;
+         var value = rolesMap[key];
+         if(value == 'MEDIATOR') {
+             graph.nodes[i].group = 0;
+         } else if (value == 'STANDARD') {
+             graph.nodes[i].group = 1;
+         } else {
+             graph.nodes[i].group = 2;
+         }
+     }
+
+     node.style("fill", function(d) { return color(d.group); })
 
      force.on("tick", function() {
      link.attr("x1", function(d) { return d.source.x; })

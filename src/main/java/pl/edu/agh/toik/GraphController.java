@@ -17,6 +17,7 @@ import javax.servlet.ServletContext;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @Controller
@@ -26,6 +27,7 @@ public class GraphController implements ServletContextAware {
     private ServletContext servletContext;
     private final String GRAPHS_DIR = "WEB-INF/graphs/";
     private HashSet<String> graphsFiles = new HashSet<String>();
+    private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
 
     private void updateGrpahsFilesSet() {
         File[] files = new File(getGraphsDirectory()).listFiles();
@@ -35,7 +37,10 @@ public class GraphController implements ServletContextAware {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
                 Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
-                GraphUtils.markRoles(graph);
+                HashMap<String, Role> roles = GraphUtils.markRoles(graph);
+                System.out.println(roles);
+                System.out.println("HERE" + file.getName());
+                graphsRoles.put(file.getName(), roles);
             }
         }
     }
@@ -54,6 +59,7 @@ public class GraphController implements ServletContextAware {
         updateGrpahsFilesSet();
         model.addAttribute("uploaded", false);
         model.addAttribute("graphsFiles", graphsFiles);
+        model.addAttribute("graphsRoles", graphsRoles);
         return "graphs";
     }
 
