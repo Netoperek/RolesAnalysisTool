@@ -1,5 +1,7 @@
 package pl.edu.agh.toik;
 
+import edu.uci.ics.jung.algorithms.blockmodel.StructurallyEquivalent;
+import edu.uci.ics.jung.algorithms.blockmodel.VertexPartition;
 import edu.uci.ics.jung.algorithms.scoring.BetweennessCentrality;
 import edu.uci.ics.jung.algorithms.scoring.PageRank;
 import edu.uci.ics.jung.graph.Graph;
@@ -142,6 +144,22 @@ public class GraphUtils {
         result.putAll(standards);
         result.putAll(influentials);
         result.putAll(mediators);
+        return result;
+    }
+
+    public static HashMap<String, String> divideStructurally(Graph<String, MyLink> graph){
+        StructurallyEquivalent<String, MyLink> divider = new StructurallyEquivalent<String, MyLink>();
+        VertexPartition<String, MyLink> partition = divider.transform(graph);
+        HashMap<String, String> result = new HashMap<String, String>();
+        Collection<Set<String>> rolesCollection = partition.getVertexPartitions();
+        int i = 1;
+        for( Set<String> roleCollection : rolesCollection ){
+            String roleName = "strucural" + i;
+            for( String vertexName : roleCollection ){
+                result.put(vertexName, roleName);
+            }
+            ++i;
+        }
         return result;
     }
 }

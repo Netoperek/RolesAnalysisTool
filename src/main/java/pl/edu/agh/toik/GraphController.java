@@ -28,6 +28,7 @@ public class GraphController implements ServletContextAware {
     private final String GRAPHS_DIR = "WEB-INF/graphs/";
     private HashSet<String> graphsFiles = new HashSet<String>();
     private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
+    private GraphType typeDisplayed = GraphType.WITH_ROLES;
     private static int mediatorsPer = 50;
     private static int influentialPer = 50;
 
@@ -58,6 +59,7 @@ public class GraphController implements ServletContextAware {
     public String graphPage(ModelMap model) {
         updateGrpahsFilesSet();
         model.addAttribute("uploaded", false);
+        model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
         return "graphs";
@@ -66,6 +68,7 @@ public class GraphController implements ServletContextAware {
     @RequestMapping(value="/upload", method=RequestMethod.POST)
     public String handleFileUpload(ModelMap model, @RequestParam("file") MultipartFile file) {
         String name = file.getOriginalFilename();
+        model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
         model.addAttribute("uploaded", false);
@@ -98,6 +101,7 @@ public class GraphController implements ServletContextAware {
         this.influentialPer = influentialP;
         this.mediatorsPer = mediatorP;
         updateGrpahsFilesSet();
+        model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
         model.addAttribute("uploaded", false);

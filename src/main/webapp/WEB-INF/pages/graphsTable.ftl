@@ -36,8 +36,13 @@
 
         </#list>
     </div>
-    <p id="STANDARD" style="visibility:hidden">STANDARD</p>
-    <p id="MEDIATOR" style="visibility:hidden">MEDIATOR</p>
-    <p id="INFLUENTIAL" style="visibility:hidden">INFLUENTIAL</p>
+    <#if typeDisplayed == 'WITH_ROLES'>
+        <div id="rolesDescription">
+            <p id="STANDARD" style="visibility:hidden">STANDARD</p>
+            <p id="MEDIATOR" style="visibility:hidden">MEDIATOR</p>
+            <p id="INFLUENTIAL" style="visibility:hidden">INFLUENTIAL</p>
+        </div>
+    </#if>
+    <button class="btn btn-default" href="#">Switch to structural</button>
 </div>
 </#if>
