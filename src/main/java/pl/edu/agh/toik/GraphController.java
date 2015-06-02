@@ -29,8 +29,8 @@ public class GraphController implements ServletContextAware {
     private HashSet<String> graphsFiles = new HashSet<String>();
     private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
     private GraphType typeDisplayed = GraphType.WITH_ROLES;
-    private static int mediatorsPer = 50;
-    private static int influentialPer = 50;
+    private static int mediatorsPer = 30;
+    private static int influentialPer = 40;
 
     private void updateGrpahsFilesSet() {
         File[] files = new File(getGraphsDirectory()).listFiles();
@@ -40,8 +40,10 @@ public class GraphController implements ServletContextAware {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
                 Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
-                HashMap<String, Role> roles = GraphUtils.markRoles(graph, mediatorsPer, influentialPer);
-                graphsRoles.put(file.getName(), roles);
+                if(!graphsRoles.containsKey(file)) {
+                    HashMap<String, Role> roles = GraphUtils.markRoles(graph, mediatorsPer, influentialPer);
+                    graphsRoles.put(file.getName(), roles);
+                }
             }
         }
     }
@@ -62,6 +64,8 @@ public class GraphController implements ServletContextAware {
         model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
+        model.addAttribute("mediatorsPer", mediatorsPer);
+        model.addAttribute("influentialPer", influentialPer);
         return "graphs";
     }
 
@@ -72,6 +76,8 @@ public class GraphController implements ServletContextAware {
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
         model.addAttribute("uploaded", false);
+        model.addAttribute("mediatorsPer", mediatorsPer);
+        model.addAttribute("influentialPer", influentialPer);
         if (!file.isEmpty()) {
             model.addAttribute("uploaded", true);
             try {
@@ -105,6 +111,8 @@ public class GraphController implements ServletContextAware {
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
         model.addAttribute("uploaded", false);
+        model.addAttribute("mediatorsPer", mediatorsPer);
+        model.addAttribute("influentialPer", influentialPer);
         return "graphs";
     }
 }

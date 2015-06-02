@@ -105,7 +105,7 @@ public class GraphUtils {
     }
 
     public static HashMap<String, Role> markRoles(
-            Graph<String, MyLink> graph, double pageRankPercentage, double beetweennesPercentage) {
+            Graph<String, MyLink> graph, double beetweennesPercentage, double pageRankPercentage) {
 
         TreeMap<String, Double> betweenness = GraphUtils.verticesBetweenness(graph);
         TreeMap<String, Double> pageRanks = GraphUtils.verticesPageRank(graph);

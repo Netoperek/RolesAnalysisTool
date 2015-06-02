@@ -26,10 +26,19 @@ function drawGraph(graph, rolesKeys, rolesValues) {
 
     d3.select("svg").remove();
 
+    var zoom = function() {
+        svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    }
+
     var svg = d3.select(".graph")
         .append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .append("g")
+        .call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom))
+        .append("g");
+
+
     graphPath = "graphs/" + graph;
      d3.json(graphPath, function(error, graph) {
      force

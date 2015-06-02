@@ -8,9 +8,10 @@
 <div class="content">
     <#include "graphsTable.ftl">
     <div class="graph">
-
     </div>
+    <#include "rolesSettingsPanel.ftl">
 </div>
+
 </body>
     <script src="scripts/graphs.js"></script>
 </html>

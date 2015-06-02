@@ -8,9 +8,7 @@
 
         <ul class="nav navbar-nav">
             <li><a href="#openUploadModal">Upload</a></li>
-            <li><a href="#openRolesModal">Roles</a></li>
         </ul>
     <#include "uploadModal.ftl">
-    <#include "rolesModal.ftl">
     </div>
 </nav>
