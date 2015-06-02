@@ -20,6 +20,6 @@ class MyLink {
 
     @Override
     public String toString() {
-        return sourceVertex + "-" +targetVertex;
+        return sourceVertex + "-" +targetVertex + " # " + weight;
     }
 }

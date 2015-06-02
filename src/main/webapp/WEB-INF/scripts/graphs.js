@@ -1,6 +1,13 @@
 /**
  * Created by pkala on 5/10/15.
  */
+function toggle_visibility(id) {
+    var e = document.getElementById(id);
+    if(e.style.display == 'block')
+        e.style.display = 'none';
+    else
+        e.style.display = 'block';
+}
 
 function drawGraph(graph, rolesKeys, rolesValues) {
     var simpleRoles = true;

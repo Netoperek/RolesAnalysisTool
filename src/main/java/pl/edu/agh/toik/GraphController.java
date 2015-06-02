@@ -17,8 +17,10 @@ import javax.servlet.ServletContext;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 @Controller
 @RequestMapping("/graphs")
@@ -28,6 +30,8 @@ public class GraphController implements ServletContextAware {
     private final String GRAPHS_DIR = "WEB-INF/graphs/";
     private HashSet<String> graphsFiles = new HashSet<String>();
     private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
+    private HashMap<String, Graph<String, MyLink>> graphs = new HashMap<String, Graph<String, MyLink>>();
+    private HashMap<String, List<MyLink>> graphsEdges = new HashMap<String, List<MyLink>>();
     private GraphType typeDisplayed = GraphType.WITH_ROLES;
     private static int mediatorsPer = 30;
     private static int influentialPer = 40;
@@ -40,10 +44,16 @@ public class GraphController implements ServletContextAware {
             if (file.isFile()) {
                 graphsFiles.add(file.getName());
                 Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
-                if(!graphsRoles.containsKey(file)) {
+                if(!graphsRoles.containsKey(file.getName())) {
                     HashMap<String, Role> roles = GraphUtils.markRoles(graph, mediatorsPer, influentialPer);
                     graphsRoles.put(file.getName(), roles);
                 }
+                if(!graphs.containsKey(file.getName())) {
+                    graphs.put(file.getName(), graph);
+
+                }
+                List<MyLink> edges = new ArrayList<MyLink>(graph.getEdges());
+                graphsEdges.put(file.getName(), edges);
             }
         }
     }
@@ -60,6 +70,7 @@ public class GraphController implements ServletContextAware {
     @RequestMapping(method = RequestMethod.GET)
     public String graphPage(ModelMap model) {
         updateGrpahsFilesSet();
+        model.addAttribute("graphsEdges", graphsEdges);
         model.addAttribute("uploaded", false);
         model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
@@ -72,6 +83,7 @@ public class GraphController implements ServletContextAware {
     @RequestMapping(value="/upload", method=RequestMethod.POST)
     public String handleFileUpload(ModelMap model, @RequestParam("file") MultipartFile file) {
         String name = file.getOriginalFilename();
+        model.addAttribute("graphsEdges", graphsEdges);
         model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
@@ -107,6 +119,7 @@ public class GraphController implements ServletContextAware {
         this.influentialPer = influentialP;
         this.mediatorsPer = mediatorP;
         updateGrpahsFilesSet();
+        model.addAttribute("graphsEdges", graphsEdges);
         model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
         model.addAttribute("graphsRoles", graphsRoles);
