@@ -38,3 +38,8 @@
     margin-top: 1%;
     width: 10%;
 }
+
+#edges {
+    overflow:auto;
+    height: 200px;
+}

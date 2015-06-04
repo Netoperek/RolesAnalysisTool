@@ -29,10 +29,29 @@
                     <#if graphsEdges??>
                         <#assign edges = graphsEdges[ele]>
                         <a href="#" onclick="toggle_visibility('edges');">Toggle Edges</a>
-                        <div id="edges">
-                        <#list edges as edge>
-                            <p> ${edge} </p>
-                        </#list>
+                        <div id="edges" style="display:none">
+                            <table class="table">
+                            <thead>
+                                <th>
+                                    #
+                                </th>
+                                <th>
+                                    Edge
+                                </th>
+                            </thead>
+                            <tbody>
+                            <#list edges as edge>
+                            <tr>
+                                <td>
+                                    ${edge_index}
+                                </td>
+                                <td>
+                                ${edge}
+                                </td>
+                            </tr>
+                            </#list>
+                            </tbody>
+                            </table>
                         </div>
                     </#if>
                     </td>
