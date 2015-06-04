@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -44,6 +45,39 @@ public class GraphUtils {
         }
     };
 
+    public static Graph<String, MyLink> getGraph(String filepath, String projectDir) {
+        if(filepath.contains("json")) {
+            return graphFromJson(filepath);
+        } else if(filepath.contains("gml")) {
+            return graphFromGml(filepath, projectDir);
+        }
+        System.out.println("Unknown format");
+        return null;
+    }
+
+    // Execute python script to convert gml to json
+    public static Graph<String, MyLink> graphFromGml(String filepath, String projectDir) {
+        String outputFile = filepath.replaceAll("gml", "json");
+        ProcessBuilder pb = new ProcessBuilder("./convert.py", "-i", filepath, "-o", outputFile);
+        pb.inheritIO();
+        pb.directory(new File(projectDir));
+        try {
+            pb.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        while(!(new File(outputFile).isFile())) {
+            try {
+                System.out.println("Waiting for converting to finish...");
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Finished converting to");
+        return graphFromJson(outputFile);
+    }
+
     public static Graph<String, MyLink> graphFromJson(String filepath) {
         Graph<String, MyLink> graph = new UndirectedSparseMultigraph<String, MyLink>();
 
@@ -63,7 +97,7 @@ public class GraphUtils {
                 JSONObject jsonEdge = (JSONObject) edge;
                 int sourceVertexIndex = Integer.parseInt(jsonEdge.get("source").toString());
                 int targetVertexIndex = Integer.parseInt(jsonEdge.get("target").toString());
-                Integer weight = Integer.parseInt(jsonEdge.get("value").toString());
+                Double weight = Double.parseDouble(jsonEdge.get("value").toString());
                 String sourceVertex = graph.getVertices().toArray()[sourceVertexIndex].toString();
                 String targetVertex = graph.getVertices().toArray()[targetVertexIndex].toString();
                 graph.addEdge(new MyLink(weight, sourceVertex, targetVertex), sourceVertex, targetVertex);
@@ -105,10 +139,8 @@ public class GraphUtils {
     }
 
     public static HashMap<String, Role> markRoles(
-            Graph<String, MyLink> graph, double beetweennesPercentage, double pageRankPercentage) {
+            Graph<String, MyLink> graph, double beetweennesPercentage, double pageRankPercentage, TreeMap<String, Double> betweenness, TreeMap<String, Double> pageRanks) {
 
-        TreeMap<String, Double> betweenness = GraphUtils.verticesBetweenness(graph);
-        TreeMap<String, Double> pageRanks = GraphUtils.verticesPageRank(graph);
         int limitBeetweenness = (int) Math.round(graph.getVertexCount() * beetweennesPercentage / 100);
         int limitPageRank = (int) Math.round(graph.getVertexCount() * pageRankPercentage / 100);
         HashMap<String, Role> result = new HashMap<String, Role>();

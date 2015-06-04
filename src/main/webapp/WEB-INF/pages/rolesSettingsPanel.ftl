@@ -6,7 +6,7 @@
        Influential percentage
        <input value="${influentialPer}" type="range" name="influential" min="0" max="100" step=1 required oninput="outputUpdateInfluentials(value)">
        <output for=fader id=influentials>${influentialPer} %</output><br/><br/>
-       <input class="btn btn-primary" type="submit" value="Upload">
+       <input class="btn btn-primary" type="submit" value="Update Settings">
    </form>
     <script>
         function outputUpdateMediators(vol) {

@@ -17,10 +17,7 @@ import javax.servlet.ServletContext;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/graphs")
@@ -32,6 +29,8 @@ public class GraphController implements ServletContextAware {
     private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
     private HashMap<String, Graph<String, MyLink>> graphs = new HashMap<String, Graph<String, MyLink>>();
     private HashMap<String, List<MyLink>> graphsEdges = new HashMap<String, List<MyLink>>();
+    private HashMap<String, TreeMap<String, Double>> graphsBeetwenness = new HashMap<String, TreeMap<String, Double>>();
+    private HashMap<String, TreeMap<String, Double>> graphsPageRank = new HashMap<String, TreeMap<String, Double>>();
     private GraphType typeDisplayed = GraphType.WITH_ROLES;
     private static int mediatorsPer = 30;
     private static int influentialPer = 40;
@@ -41,13 +40,22 @@ public class GraphController implements ServletContextAware {
         graphsFiles.clear();
         if (files == null) return;
         for (File file : files) {
-            if (file.isFile()) {
-                graphsFiles.add(file.getName());
-                Graph<String, MyLink> graph = GraphUtils.graphFromJson(file.getAbsolutePath());
-                if(!graphsRoles.containsKey(file.getName())) {
-                    HashMap<String, Role> roles = GraphUtils.markRoles(graph, mediatorsPer, influentialPer);
-                    graphsRoles.put(file.getName(), roles);
+            if (file.isFile() ) {
+                Graph<String, MyLink> graph = GraphUtils.getGraph(file.getAbsolutePath(), getProjectDirectory());
+                graphsFiles.add(file.getName().replaceAll("gml", "json"));
+
+                if(!graphsBeetwenness.containsKey(file.getName())) {
+                    TreeMap<String, Double> betweenness = GraphUtils.verticesBetweenness(graph);
+                    TreeMap<String, Double> pageRanks = GraphUtils.verticesPageRank(graph);
+                    graphsBeetwenness.put(file.getName(), betweenness);
+                    graphsPageRank.put(file.getName(), pageRanks);
                 }
+
+                TreeMap<String, Double> betweenness = graphsBeetwenness.get(file.getName());
+                TreeMap<String, Double> pageRanks = graphsPageRank.get(file.getName());
+                HashMap<String, Role> roles = GraphUtils.markRoles(graph, mediatorsPer, influentialPer, betweenness, pageRanks);
+                graphsRoles.put(file.getName(), roles);
+
                 if(!graphs.containsKey(file.getName())) {
                     graphs.put(file.getName(), graph);
 
@@ -60,6 +68,10 @@ public class GraphController implements ServletContextAware {
 
     private String getGraphsDirectory() {
         return servletContext.getRealPath("/") + GRAPHS_DIR;
+    }
+
+    private String getProjectDirectory() {
+        return servletContext.getRealPath("../../");
     }
 
     @Override

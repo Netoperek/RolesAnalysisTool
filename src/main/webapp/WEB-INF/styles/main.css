@@ -39,7 +39,7 @@
     width: 10%;
 }
 
-#edges {
+.edges {
     overflow:auto;
     height: 200px;
 }
