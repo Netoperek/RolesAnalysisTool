@@ -4,6 +4,7 @@ package pl.edu.agh.toik;
  * Created by pkala on 5/9/15.
  */
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import edu.uci.ics.jung.graph.Graph;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,7 +27,7 @@ public class GraphController implements ServletContextAware {
     private ServletContext servletContext;
     private final String GRAPHS_DIR = "WEB-INF/graphs/";
     private HashSet<String> graphsFiles = new HashSet<String>();
-    private HashMap<String, HashMap<String, Role>> graphsRoles = new HashMap<String, HashMap<String, Role>>();
+    private Map graphsRoles = new HashMap<String, HashMap<String, Role>>();
     private HashMap<String, Graph<String, MyLink>> graphs = new HashMap<String, Graph<String, MyLink>>();
     private HashMap<String, List<MyLink>> graphsEdges = new HashMap<String, List<MyLink>>();
     private HashMap<String, TreeMap<String, Double>> graphsBeetwenness = new HashMap<String, TreeMap<String, Double>>();
@@ -81,27 +82,16 @@ public class GraphController implements ServletContextAware {
 
     @RequestMapping(method = RequestMethod.GET)
     public String graphPage(ModelMap model) {
+        this.typeDisplayed = GraphType.WITH_ROLES;
         updateGrpahsFilesSet();
-        model.addAttribute("graphsEdges", graphsEdges);
-        model.addAttribute("uploaded", false);
-        model.addAttribute("typeDisplayed", typeDisplayed);
-        model.addAttribute("graphsFiles", graphsFiles);
-        model.addAttribute("graphsRoles", graphsRoles);
-        model.addAttribute("mediatorsPer", mediatorsPer);
-        model.addAttribute("influentialPer", influentialPer);
+        prepareModel(model);
         return "graphs";
     }
 
     @RequestMapping(value="/upload", method=RequestMethod.POST)
     public String handleFileUpload(ModelMap model, @RequestParam("file") MultipartFile file) {
         String name = file.getOriginalFilename();
-        model.addAttribute("graphsEdges", graphsEdges);
-        model.addAttribute("typeDisplayed", typeDisplayed);
-        model.addAttribute("graphsFiles", graphsFiles);
-        model.addAttribute("graphsRoles", graphsRoles);
-        model.addAttribute("uploaded", false);
-        model.addAttribute("mediatorsPer", mediatorsPer);
-        model.addAttribute("influentialPer", influentialPer);
+        prepareModel(model);
         if (!file.isEmpty()) {
             model.addAttribute("uploaded", true);
             try {
@@ -126,11 +116,35 @@ public class GraphController implements ServletContextAware {
         return "graphs";
     }
 
+    @RequestMapping(value="/switchToStructural", method = RequestMethod.GET)
+    public String switchToStructural(ModelMap model){
+        this.typeDisplayed = GraphType.STRUCTURAL;
+        File[] files = new File(getGraphsDirectory()).listFiles();
+        graphsFiles.clear();
+        if (files == null) return "graphs";
+        for (File file : files) {
+            if (file.isFile() ) {
+                Graph<String, MyLink> graph = GraphUtils.getGraph(file.getAbsolutePath(), getProjectDirectory());
+                graphsFiles.add(file.getName().replaceAll("gml", "json"));
+
+                HashMap<String, String> roles = GraphUtils.divideStructurally(graph);
+                this.graphsRoles.put(file.getName(), roles);
+            }
+        }
+        prepareModel(model);
+        return "graphs";
+    }
+
     @RequestMapping(value="/updateRoles", method=RequestMethod.POST)
     public String handleRolesInput(ModelMap model, @RequestParam("mediator") Integer mediatorP,@RequestParam("influential") Integer influentialP) {
         this.influentialPer = influentialP;
         this.mediatorsPer = mediatorP;
         updateGrpahsFilesSet();
+        prepareModel(model);
+        return "graphs";
+    }
+
+    private void prepareModel(ModelMap model) {
         model.addAttribute("graphsEdges", graphsEdges);
         model.addAttribute("typeDisplayed", typeDisplayed);
         model.addAttribute("graphsFiles", graphsFiles);
@@ -138,6 +152,6 @@ public class GraphController implements ServletContextAware {
         model.addAttribute("uploaded", false);
         model.addAttribute("mediatorsPer", mediatorsPer);
         model.addAttribute("influentialPer", influentialPer);
-        return "graphs";
     }
+
 }

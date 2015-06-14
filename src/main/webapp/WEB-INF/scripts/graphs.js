@@ -9,8 +9,7 @@ function toggle_visibility(id) {
         e.style.display = 'block';
 }
 
-function drawGraph(graph, rolesKeys, rolesValues) {
-    var simpleRoles = true;
+function drawGraph(graph, rolesKeys, rolesValues, typeDisplayed) {
     var rolesKeysArray = rolesKeys.split(", ");
     var rolesValuesArray = rolesValues.split(", ");
     var rolesMap = {};
@@ -70,7 +69,7 @@ function drawGraph(graph, rolesKeys, rolesValues) {
      .text(function(d) { return d.name; });
 
      var i = 0;
-     if(simpleRoles) {
+     if(typeDisplayed == 'WITH_ROLES') {
          for(var i = 0; i < graph.nodes.length; i++) {
              var key = graph.nodes[i].name;
              var value = rolesMap[key];

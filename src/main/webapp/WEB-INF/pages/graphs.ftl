@@ -6,12 +6,14 @@
 <body>
 <#include "navBar.ftl">
 <div class="content">
-    <#include "graphsTable.ftl">
+<#include "graphsTable.ftl">
     <div class="graph">
     </div>
+<#if typeDisplayed == 'WITH_ROLES'>
     <#include "rolesSettingsPanel.ftl">
+</#if>
 </div>
 
 </body>
-    <script src="scripts/graphs.js"></script>
+<script src="scripts/graphs.js"></script>
 </html>

@@ -23,7 +23,7 @@
                             <#assign values = graphsRoles[ele]?values>
                             <#assign keys = graphsRoles[ele]?keys>
                             ${ele}
-                            <button onclick="drawGraph('${ele}', '${keys?join(", ", "-")}', '${values?join(", ", "-")}')" type="submit" class="btn btn-info">
+                            <button onclick="drawGraph('${ele}', '${keys?join(", ", "-")}', '${values?join(", ", "-")}', '${typeDisplayed}')" type="submit" class="btn btn-info">
                                 <span class="glyphicon glyphicon-menu-left"></span>
                             </button>
                         </#if>
@@ -69,14 +69,16 @@
         </#list>
     </div>
 
-    <#if typeDisplayed == 'WITH_ROLES'>
-        <div id="rolesDescription">
+
+    <div id="rolesDescription">
+        <#if typeDisplayed == 'WITH_ROLES'>
             <p id="STANDARD" style="visibility:hidden">STANDARD</p>
             <p id="MEDIATOR" style="visibility:hidden">MEDIATOR</p>
             <p id="INFLUENTIAL" style="visibility:hidden">INFLUENTIAL</p>
-        </div>
-    </#if>
+        </#if>
+    </div>
 
-    <button class="btn btn-default" href="#">Switch to structural</button>
+
+    <a class="btn btn-default" href="/graphs/switchToStructural">Switch to structural</a>
 </div>
 </#if>
