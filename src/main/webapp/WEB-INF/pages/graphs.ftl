@@ -7,7 +7,7 @@
 <#include "navBar.ftl">
 <div class="content">
 <#include "graphsTable.ftl">
-    <div class="graph">
+    <div id="graph" class="graph">
     </div>
 <#if typeDisplayed == 'WITH_ROLES'>
     <#include "rolesSettingsPanel.ftl">

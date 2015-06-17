@@ -22,14 +22,23 @@
                         <#if graphsRoles[ele]??>
                             <#assign values = graphsRoles[ele]?values>
                             <#assign keys = graphsRoles[ele]?keys>
+                            <#assign valuesStr = graphStructuralRoles[ele]?values>
+                            <#assign keysStr = graphStructuralRoles[ele]?keys>
                             ${ele}
                             <button onclick="drawGraph('${ele}', '${keys?join(", ", "-")}', '${values?join(", ", "-")}', '${typeDisplayed}')" type="submit" class="btn btn-info">
-                                <span class="glyphicon glyphicon-menu-left"></span>
+                                Draw roles graph
+                            </button>
+                            <button onclick="drawGraph('${ele}', '${keysStr?join(", ", "-")}', '${valuesStr?join(", ", "-")}', 'STRUCTURAL')" type="submit" class="btn btn-info">
+                                Draw structural graph
+                            </button>
+                            <button onclick="drawTable('${ele}')" type="submit" class="btn btn-info">
+                                Draw table
                             </button>
                         </#if>
                     </#if>
                     <#if graphsEdges??>
                         <#if graphsEdges[ele]??>
+                            <br />
                             <#assign edges = graphsEdges[ele]>
                             <a href="#" onclick="toggle_visibility(${ele_index});">Toggle Edges</a>
                             <div id="${ele_index}" class="edges" style="display:none">
@@ -79,6 +88,5 @@
     </div>
 
 
-    <a class="btn btn-default" href="/graphs/switchToStructural">Switch to structural</a>
 </div>
 </#if>

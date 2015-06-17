@@ -28,6 +28,7 @@ public class GraphController implements ServletContextAware {
     private final String GRAPHS_DIR = "WEB-INF/graphs/";
     private HashSet<String> graphsFiles = new HashSet<String>();
     private Map graphsRoles = new HashMap<String, HashMap<String, Role>>();
+    private Map graphsStructuralRoles = new HashMap<String, HashMap<String, Role>>();
     private HashMap<String, Graph<String, MyLink>> graphs = new HashMap<String, Graph<String, MyLink>>();
     private HashMap<String, List<MyLink>> graphsEdges = new HashMap<String, List<MyLink>>();
     private HashMap<String, TreeMap<String, Double>> graphsBeetwenness = new HashMap<String, TreeMap<String, Double>>();
@@ -63,6 +64,8 @@ public class GraphController implements ServletContextAware {
                 }
                 List<MyLink> edges = new ArrayList<MyLink>(graph.getEdges());
                 graphsEdges.put(file.getName(), edges);
+
+                this.graphsStructuralRoles.put(file.getName(), GraphUtils.divideStructurally(graph));
             }
         }
     }
@@ -152,6 +155,7 @@ public class GraphController implements ServletContextAware {
         model.addAttribute("uploaded", false);
         model.addAttribute("mediatorsPer", mediatorsPer);
         model.addAttribute("influentialPer", influentialPer);
+        model.addAttribute("graphStructuralRoles", graphsStructuralRoles);
     }
 
 }
